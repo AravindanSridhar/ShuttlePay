@@ -21,12 +21,6 @@ server.set("view engine", "ejs");
 server.set("views", path.join(__dirname, "views"));
 
 //DB Connection
-var con = mysql.createConnection({
-  database: "KyMW6ZWxXt",
-  host: "remotemysql.com",
-  user: "KyMW6ZWxXt",
-  password: "HRHNF0erBa"
-});
 
 con.connect(function(err) {
   if (err) throw err;
