@@ -118,7 +118,7 @@ server.post("/authLogin", function(req, res) {
 //Start of Dashboard Routes ===============================================================
 
 server.get("/login", function(req, res) {
-  res.render("login");
+  res.render("dashboard");
 });
 
 //End of Dashboard Routes ===============================================================
