@@ -37,7 +37,7 @@ setInterval(function() {
 //Start of Server API Handlers===========================================================================
 
 // Fetch single user profile along with latest transaction details
-server.post("/fetchProfile", function(req, res) {
+server.post("/api/fetchProfile", function(req, res) {
   let sql =
     'SELECT users.*, transactions.* FROM users INNER JOIN transactions ON users.latestTranID = transactions.transactionID WHERE users.regNo = "' +
     req.body.regNo +
@@ -56,7 +56,7 @@ server.post("/fetchProfile", function(req, res) {
 });
 
 // Fetch single user's transaction history
-server.post("/fetchTransactionHistory", function(req, res) {
+server.post("/api/fetchTransactionHistory", function(req, res) {
   let sql =
     'SELECT * FROM transactions WHERE regNo = "' + req.body.regNo + '";';
   con.query(sql, function(err, result) {
@@ -73,7 +73,7 @@ server.post("/fetchTransactionHistory", function(req, res) {
 });
 
 // Fetch cabs' location
-server.post("/fetchCabsLocation", function(req, res) {
+server.post("/api/fetchCabsLocation", function(req, res) {
   let sql = "SELECT * FROM cabs;";
   con.query(sql, function(err, result) {
     if (err) {
@@ -89,7 +89,7 @@ server.post("/fetchCabsLocation", function(req, res) {
 });
 
 // Authenticate a user login
-server.post("/authLogin", function(req, res) {
+server.post("/api/authLogin", function(req, res) {
   let regNo = req.body.regNo;
   let pwd = req.body.pwd;
   var pwdHash = crypto
@@ -103,11 +103,10 @@ server.post("/authLogin", function(req, res) {
       throw err;
     } else {
       if (result.length == 0) {
-        res.send({ status: "regNoNotFound" });
+        res.send({ status: "-1" });
       } else {
-        if (result[0].password == pwdHash)
-          res.send({ status: "authenticatedLogin" });
-        else res.send({ status: "wrongCredentials" });
+        if (result[0].password == pwdHash) res.send({ status: "1" });
+        else res.send({ status: "0" });
       }
     }
   });
