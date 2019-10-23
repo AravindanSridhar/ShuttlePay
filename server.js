@@ -112,6 +112,28 @@ server.post("/api/authLogin", function(req, res) {
   });
 });
 
+server.post("/api/updateCabsLocation", function(req, res) {
+  var cabID = req.body.cabID;
+  var lat = req.body.lat;
+  var long = req.body.long;
+  let sql =
+    'UPDATE cabs SET gpsLatitude = "' +
+    lat +
+    '", gpsLongitude = "' +
+    long +
+    '" WHERE cabID = ' +
+    cabID +
+    ";";
+  con.query(sql, function(err, result) {
+    if (err) {
+      res.send({ status: "error" });
+      throw err;
+    } else {
+      res.send({ status: "success" });
+    }
+  });
+});
+
 //End of Server API Handlers ===============================================================
 //-------------------------------------------------------------------------------------
 //Start of Dashboard Routes ===============================================================
