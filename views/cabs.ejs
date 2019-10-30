@@ -17,13 +17,27 @@
       crossorigin="anonymous"
     ></script>
     <script src="scripts.js"></script>
+    <style>
+      header,
+      main,
+      footer {
+        padding-left: 300px;
+      }
+
+      table tr td {
+        border-bottom: solid 1px #dddddd;
+      }
+      /* @media only screen and (max-width : 992px) {
+          header, main, footer {
+            padding-left: 0;
+          } */
+    </style>
     <!--Let browser know website is optimized for mobile-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   </head>
 
   <body>
     <nav style="background-color: #263238;"><!-- navbar content here  --></nav>
-
     <ul
       id="slide-out"
       class="sidenav sidenav-fixed"
@@ -38,7 +52,7 @@
         </div>
       </li>
       <li>
-        <a href="#!" class="waves-effect white-text"
+        <a href="/dashboard" class="waves-effect white-text"
           ><i class="material-icons icon-white" style="color: white;">layers</i
           >Dashboard</a
         >
@@ -51,14 +65,14 @@
         >
       </li>
       <li>
-        <a class="waves-effect white-text" href="#!"
+        <a class="waves-effect white-text" href="/analytics"
           ><i class="material-icons icon-white" style="color: white;"
             >insert_chart</i
           >Analytics</a
         >
       </li>
       <li>
-        <a class="waves-effect white-text" href="#!"
+        <a class="waves-effect white-text" href="/users"
           ><i class="material-icons icon-white" style="color: white;">group</i
           >Users</a
         >
@@ -67,6 +81,39 @@
     <a href="#" data-target="slide-out" class="sidenav-trigger"
       ><i class="material-icons">menu</i></a
     >
+    <main>
+      <div class="container">
+          <div class="col s3">
+              <h3>Users</h3>
+          </div>
+        <div class="card no-shadows" style="border-top: solid orange 5px;">
+          <div class="row">
+              <input type="text" id="searchRTO" onkeyup="searchRTO()">
+              <label for="searchRTO" class="label">RTO Number</label>
+          </div>
+        </div>
+        <table class="highlight">
+          <thead>
+            <tr>
+              <th>Cab ID</th>
+              <th>RTO No.</th>
+              <th>Status</th>
+
+              <th>Driver</th>
+            </tr>
+            <% for(var i=0; i < cabs.length; i++) { %>
+            <tr>
+              <td><%= cabs[i].cabID %></td>
+              <td><%= cabs[i].registrationNumber %></td>
+              <td><%= cabs[i].status %></td>
+              <td><%= cabs[i].driverID %></td>
+            </tr>
+            <% } %>
+          </thead>
+
+          <tbody></tbody>
+        </table>
+    </main>
     <!-- Compiled and minified JavaScript -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
   </body>

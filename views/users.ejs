@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!--Import Google Icon Font-->
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <!-- Compiled and minified CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
+    />
+    <script
+      src="https://code.jquery.com/jquery-3.4.1.min.js"
+      integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+      crossorigin="anonymous"
+    ></script>
+    <script src="scripts.js"></script>
+    <style>
+      header,
+      main,
+      footer {
+        padding-left: 300px;
+      }
+
+      table tr td {
+        border-bottom: solid 1px #dddddd;
+      }
+      .no-shadows {
+    box-shadow: none!important;
+}
+      /* @media only screen and (max-width : 992px) {
+          header, main, footer {
+            padding-left: 0;
+          } */   
+    </style>
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+
+  <body>
+    <nav style="background-color: #263238;"><!-- navbar content here  --></nav>
+
+    <ul
+      id="slide-out"
+      class="sidenav sidenav-fixed"
+      style="background-color: #263238;"
+    >
+      <li>
+        <div class="user-view">
+          <div class="background">
+            <img src="images/logo.png" />
+          </div>
+          <br /><br />
+        </div>
+      </li>
+      <li>
+        <a href="/dashboard" class="waves-effect white-text"
+          ><i class="material-icons icon-white" style="color: white;">layers</i
+          >Dashboard</a
+        >
+      </li>
+      <li>
+        <a href="/cabs" class="waves-effect white-text"
+          ><i class="material-icons icon-white" style="color: white;"
+            >airport_shuttle</i
+          >Cabs</a
+        >
+      </li>
+      <li>
+        <a class="waves-effect white-text" href="/analytics"
+          ><i class="material-icons icon-white" style="color: white;"
+            >insert_chart</i
+          >Analytics</a
+        >
+      </li>
+      <li>
+        <a class="waves-effect white-text active" href="/users"
+          ><i class="material-icons icon-white" style="color: white;">group</i
+          >Users</a
+        >
+      </li>
+    </ul>
+    <a href="#" data-target="slide-out" class="sidenav-trigger"
+      ><i class="material-icons">menu</i></a
+    >
+    <main>
+      <div class="container">
+          <div class="col s3">
+              <h3>Users</h3>
+          </div>
+        <div class="card no-shadows" style="border-top: solid orange 5px;">
+          <div class="row">
+              <div class="col s4">
+                <div class="input-field">
+                    <input type="text" id="searchRegNo" onkeyup="searchRegNo()">  
+                    <label for="searchRegNo" class="label">Reg. No.</label>
+                </div>
+              </div>
+              <div class="col s4">
+                <div class="input-field">
+                    <input type="text" id="myInput" onkeyup="searchUserName()">
+                    <label for="searchUserName" class="label">User Name</label>
+                </div>  
+              </div>
+              <div class="col s4">
+                <div class="input-field">
+                    <input type="text" id="myInput" onkeyup="searchRFUID()">
+                    <label for="searchRFUID" class="label">RFUID</label>
+                </div>  
+              </div>
+            </div>
+          </div>
+        <table class="highlight" id="usersTable">
+          <thead >
+            <tr>
+              <th>S. No.</th>
+              <th>Reg. No.</th>
+              <th>Full Name</th>
+              <th>User Type</th>
+              <th>Balance</th>
+              <th>Email ID</th>
+              <th>RFUID</th>
+            </tr>
+          </thead>
+
+          <tbody><% for(var i=0; i < users.length; i++) { %>
+            <tr>
+              <td><%= i+1 %></td>
+              <td><%= users[i].regNo %></td>
+              <td><%= users[i].userName %></td>
+              <td><%= users[i].userType %></td>
+              <td><%= users[i].balance %></td>
+              <td><%= users[i].emailID %></td>
+              <td><%= users[i].rfuid %></td>
+            </tr>
+            <% } %></tbody>
+        </table>
+    </main>
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  </body>
+</html>

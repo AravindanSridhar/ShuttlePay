@@ -4,6 +4,7 @@ var bodyParser = require("body-parser");
 var mysql = require("mysql");
 var path = require("path");
 var crypto = require("crypto");
+let dbJSON = require("./security/db.json");
 
 //Server Initialization ================================================================
 var server = express();
@@ -21,6 +22,7 @@ server.set("view engine", "ejs");
 server.set("views", path.join(__dirname, "views"));
 
 //DB Connection
+var con = mysql.createConnection(dbJSON);
 
 con.connect(function(err) {
   if (err) throw err;
@@ -138,8 +140,32 @@ server.post("/api/updateCabsLocation", function(req, res) {
 //-------------------------------------------------------------------------------------
 //Start of Dashboard Routes ===============================================================
 
-server.get("/login", function(req, res) {
+server.get("/dashboard", function(req, res) {
   res.render("dashboard");
+});
+
+server.get("/cabs", function(req, res) {
+  let sql = "SELECT * FROM cabs;";
+  con.query(sql, function(err, result) {
+    if (err) {
+      res.send({ status: "error" });
+      throw err;
+    } else {
+      res.render("cabs", { cabs: result });
+    }
+  });
+});
+
+server.get("/users", function(req, res) {
+  let sql = "SELECT * FROM users;";
+  con.query(sql, function(err, result) {
+    if (err) {
+      res.send({ status: "error" });
+      throw err;
+    } else {
+      res.render("users", { users: result });
+    }
+  });
 });
 
 //End of Dashboard Routes ===============================================================
@@ -147,7 +173,7 @@ server.get("/login", function(req, res) {
 //Server Startup and Listen ======================================================
 require("dns").lookup(require("os").hostname(), function(err, add, fam) {
   ip = add;
-  server.listen(5000, function() {
+  server.listen(5000, "192.168.1.15", function() {
     console.log(
       "Shuttle Pay Server started at : " + Date() + " at port : " + ip
     );
