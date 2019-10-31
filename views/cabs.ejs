@@ -17,21 +17,7 @@
       crossorigin="anonymous"
     ></script>
     <script src="scripts.js"></script>
-    <style>
-      header,
-      main,
-      footer {
-        padding-left: 300px;
-      }
-
-      table tr td {
-        border-bottom: solid 1px #dddddd;
-      }
-      /* @media only screen and (max-width : 992px) {
-          header, main, footer {
-            padding-left: 0;
-          } */
-    </style>
+    <link rel="stylesheet" href="/styles.css" />
     <!--Let browser know website is optimized for mobile-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   </head>
@@ -88,30 +74,34 @@
           </div>
         <div class="card no-shadows" style="border-top: solid orange 5px;">
           <div class="row">
-              <input type="text" id="searchRTO" onkeyup="searchRTO()">
-              <label for="searchRTO" class="label">RTO Number</label>
+            <div class="col s12">
+              <div class="input-field">
+                <input type="text" id="searchRTO" onkeyup="searchRTO()">
+                <label for="searchRTO" class="label">RTO Number</label>
+            </div>
+          </div>       
           </div>
         </div>
-        <table class="highlight">
-          <thead>
+        <table class="highlight" style="border-top: solid #263238 5px;">
+          <thead >
             <tr>
               <th>Cab ID</th>
               <th>RTO No.</th>
               <th>Status</th>
-
               <th>Driver</th>
             </tr>
-            <% for(var i=0; i < cabs.length; i++) { %>
-            <tr>
-              <td><%= cabs[i].cabID %></td>
-              <td><%= cabs[i].registrationNumber %></td>
-              <td><%= cabs[i].status %></td>
-              <td><%= cabs[i].driverID %></td>
-            </tr>
-            <% } %>
           </thead>
-
-          <tbody></tbody>
+          
+          <tbody>
+              <% for(var i=0; i < cabs.length; i++) { %>
+                <tr>
+                  <td><%= cabs[i].cabID %></td>
+                  <td><%= cabs[i].registrationNumber %></td>
+                  <td><%= cabs[i].status %></td>
+                  <td><%= cabs[i].driverID %></td>
+                </tr>
+                <% } %>
+          </tbody>
         </table>
     </main>
     <!-- Compiled and minified JavaScript -->

@@ -144,6 +144,10 @@ server.get("/dashboard", function(req, res) {
   res.render("dashboard");
 });
 
+server.get("/analytics", function(req, res) {
+  res.render("cabAnalytics");
+});
+
 server.get("/cabs", function(req, res) {
   let sql = "SELECT * FROM cabs;";
   con.query(sql, function(err, result) {
@@ -173,7 +177,7 @@ server.get("/users", function(req, res) {
 //Server Startup and Listen ======================================================
 require("dns").lookup(require("os").hostname(), function(err, add, fam) {
   ip = add;
-  server.listen(5000, "192.168.1.15", function() {
+  server.listen(5000, function() {
     console.log(
       "Shuttle Pay Server started at : " + Date() + " at port : " + ip
     );
