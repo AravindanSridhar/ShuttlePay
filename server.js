@@ -4,7 +4,8 @@ var bodyParser = require("body-parser");
 var mysql = require("mysql");
 var path = require("path");
 var crypto = require("crypto");
-let dbJSON = require("./security/db.json");
+var dbJSON = require("./security/db.json");
+var geolib = require("geolib");
 
 //Server Initialization ================================================================
 var server = express();
@@ -173,6 +174,31 @@ server.get("/users", function(req, res) {
 });
 
 //End of Dashboard Routes ===============================================================
+//-------------------------------------------------------------------------------------
+//Analytics AJAX Routes =================================================================
+
+server.post("/weeklyPayments", function(req, res) {
+  var ij = geolib.getDistance(
+    { latitude: 12.971719, longitude: 79.163484 },
+    { latitude: 12.971758, longitude: 79.16372 }
+  );
+  console.log(ij);
+  let sql =
+    "SELECT DISTINCT DATE(timestamp) as day, COUNT(payID) as count FROM payments WHERE timestamp >DATE_SUB(now(), INTERVAL 1 WEEK) GROUP BY DATE(timestamp) ORDER BY DATE(timestamp)";
+  con.query(sql, function(err, result) {
+    if (err) {
+      res.send({ status: "error" });
+      throw err;
+    } else {
+      var weekly = {};
+      weekly.status = "success";
+      weekly.data = result;
+      res.send(weekly);
+    }
+  });
+});
+
+//End of AJAX Routes ====================================================================
 //-------------------------------------------------------------------------------------
 //Server Startup and Listen ======================================================
 require("dns").lookup(require("os").hostname(), function(err, add, fam) {
