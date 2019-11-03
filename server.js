@@ -6,6 +6,8 @@ var path = require("path");
 var crypto = require("crypto");
 var dbJSON = require("./security/db.json");
 var geolib = require("geolib");
+var dateFormat = require("dateformat");
+var moment = require("moment");
 
 //Server Initialization ================================================================
 var server = express();
@@ -115,27 +117,115 @@ server.post("/api/authLogin", function(req, res) {
   });
 });
 
-server.post("/api/updateCabsLocation", function(req, res) {
-  var cabID = req.body.cabID;
-  var lat = req.body.lat;
-  var long = req.body.long;
-  let sql =
-    'UPDATE cabs SET gpsLatitude = "' +
-    lat +
-    '", gpsLongitude = "' +
-    long +
-    '" WHERE cabID = ' +
-    cabID +
-    ";";
-  con.query(sql, function(err, result) {
-    if (err) {
-      res.send({ status: "error" });
-      throw err;
-    } else {
-      res.send({ status: "success" });
-    }
-  });
-});
+//--------=======---------- Route currently under review DO NOT USE THIS ONE
+// server.post("/api/updateCabsLocation", function(req, res) {
+//   var cabID = req.body.cabID;
+//   var lat = req.body.lat;
+//   var long = req.body.long;
+
+//   var sjt = { latitude: 12.971695, longitude: 79.163428 };
+//   var tt = { latitude: 12.971115, longitude: 79.159427 };
+
+//   let sql1 = "SELECT isAT FROM cabs WHERE cabID = " + cabID;
+//   let sql2 = "";
+
+//   var isAtSjt = geolib.isPointWithinRadius(
+//     sjt,
+//     { latitude: lat, longitude: long },
+//     15
+//   );
+//   var isAtTt = geolib.isPointWithinRadius(
+//     tt,
+//     { latitude: lat, longitude: long },
+//     15
+//   );
+
+//   con.query(sql1, function(err, result) {
+//     if (err) {
+//       throw err;
+//     } else {
+//       //When not at any building
+//       if (result[0].isAT == null) {
+//         var pos = "";
+//         if (isAtSjt) {
+//           //On transit to SJT
+//           sql2 =
+//             'UPDATE cabs SET gpsLatitude = "' +
+//             lat +
+//             '", gpsLongitude = "' +
+//             long +
+//             '", isAT = "sjt", analyticsTimestamp ="' +
+//             dateFormat(new Date(), "yyyy-mm-dd HH:MM:ss") +
+//             '" WHERE cabID = ' +
+//             cabID +
+//             ";";
+//           console.log(sql2);
+//         } else if (isAtTt) {
+//           //On transit to TT
+//           sql2 =
+//             'UPDATE cabs SET gpsLatitude = "' +
+//             lat +
+//             '", gpsLongitude = "' +
+//             long +
+//             '", isAT = "tt", analyticsTimestamp ="' +
+//             dateFormat(new Date(), "yyyy-mm-dd HH:MM:ss") +
+//             '" WHERE cabID = ' +
+//             cabID +
+//             ";";
+//         } else {
+//           //On transit to On transit
+//           sql2 =
+//             'UPDATE cabs SET gpsLatitude = "' +
+//             lat +
+//             '", gpsLongitude = "' +
+//             long +
+//             '", isAT = NULL, analyticsTimestamp = NULL WHERE cabID = ' +
+//             cabID +
+//             ";";
+//         }
+//         con.query(sql2, function(err, result) {
+//           if (err) {
+//             res.send({ status: "error" });
+//             throw err;
+//           } else {
+//             res.send({ status: "success" });
+//           }
+//         });
+//       } else if (isAtSjt || isAtTt) {
+//         //Building to same Building within 15meters
+//         let sql2 =
+//           'UPDATE cabs SET gpsLatitude = "' +
+//           lat +
+//           '", gpsLongitude = "' +
+//           long +
+//           '" WHERE cabID = ' +
+//           cabID +
+//           ";";
+//         con.query(sql2, function(err, result) {
+//           if (err) {
+//             res.send({ status: "error" });
+//             throw err;
+//           } else {
+//             res.send({ status: "success" });
+//           }
+//         });
+//       } else {
+//         //Building to On Transit
+//         let sql2 = "SELECT analyticsTimestamp FROM cabs WHERE cabID = " + cabID;
+//         con.query(sql2, function(err, result) {
+//           if (err) {
+//             res.send({ status: "error" });
+//             throw err;
+//           } else {
+//             console.log(
+//               dateFormat(result[0].analyticsTimestamp, "yyyy-mm-dd HH:MM:ss")
+//             );
+//           }
+//         });
+//       }
+//     }
+//   });
+// });
 
 //End of Server API Handlers ===============================================================
 //-------------------------------------------------------------------------------------
@@ -178,11 +268,6 @@ server.get("/users", function(req, res) {
 //Analytics AJAX Routes =================================================================
 
 server.post("/weeklyPayments", function(req, res) {
-  var ij = geolib.getDistance(
-    { latitude: 12.971719, longitude: 79.163484 },
-    { latitude: 12.971758, longitude: 79.16372 }
-  );
-  console.log(ij);
   let sql =
     "SELECT DISTINCT DATE(timestamp) as day, COUNT(payID) as count FROM payments WHERE timestamp >DATE_SUB(now(), INTERVAL 1 WEEK) GROUP BY DATE(timestamp) ORDER BY DATE(timestamp)";
   con.query(sql, function(err, result) {
