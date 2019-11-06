@@ -504,7 +504,7 @@ server.post("/api/averageWaitingTime", function(req, res) {
 //Server Startup and Listen ======================================================
 require("dns").lookup(require("os").hostname(), function(err, add, fam) {
   ip = add;
-  server.listen(5000, "192.168.1.11", function() {
+  server.listen(80, function() {
     console.log(
       "Shuttle Pay Server started at : " + Date() + " at port : " + ip
     );
