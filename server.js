@@ -159,7 +159,7 @@ server.post("/api/updateCabsLocation", function(req, res) {
   var cabID = req.body.cabID;
   var lat = req.body.lat;
   var long = req.body.long;
-
+  console.log("Gokul");
   var sjt = { latitude: 12.971695, longitude: 79.163428 };
   var tt = { latitude: 12.971115, longitude: 79.159427 };
 
@@ -356,6 +356,62 @@ server.post("/api/makeTransaction", function(req, res) {
   });
 });
 
+server.post("/api/pay", function(req, res) {
+  console.log("Got it");
+  var rfuid = req.body.rfuid;
+  var timestamp = dateFormat(new Date(), "yyyy-mm-dd HH:MM:ss");
+  var cabID = req.body.cabID;
+  var routeID = req.body.routeID;
+  let sql = "SELECT regNo,balance FROM users WHERE rfuid = '" + rfuid + "';";
+  con.query(sql, function(err, result) {
+    if (err) {
+      res.send({ status: "error" });
+      throw err;
+    } else {
+      var regNo = result[0].regNo;
+      var balance = result[0].balance;
+      if (parseInt(balance) < 15) {
+        res.send({ status: "Low Balance" });
+      } else {
+        var newBalance = parseInt(balance) - parseInt("15");
+        console.log("New Balance : " + newBalance);
+        let sql1 =
+          "UPDATE users SET balance = " +
+          newBalance +
+          " WHERE regNo = '" +
+          regNo +
+          "';";
+        con.query(sql1, function(err, result1) {
+          if (err) {
+            res.send({ status: "error" });
+            throw err;
+          } else {
+            console.log("Making payments");
+            let sql2 =
+              "INSERT INTO payments (cabID,regNo,timestamp,routeID,amount) VALUES ('" +
+              cabID +
+              "','" +
+              regNo +
+              "','" +
+              timestamp +
+              "','" +
+              routeID +
+              "',15);";
+            con.query(sql2, function(err, result2) {
+              if (err) {
+                res.send({ status: "error" });
+                throw err;
+              } else {
+                res.send({ status: "Paid", balance: balance });
+              }
+            });
+          }
+        });
+      }
+    }
+  });
+});
+
 //End of Server API Handlers ===============================================================
 //-------------------------------------------------------------------------------------
 //Start of Dashboard Routes ===============================================================
@@ -448,7 +504,7 @@ server.post("/api/averageWaitingTime", function(req, res) {
 //Server Startup and Listen ======================================================
 require("dns").lookup(require("os").hostname(), function(err, add, fam) {
   ip = add;
-  server.listen(5000, function() {
+  server.listen(5000, "192.168.1.11", function() {
     console.log(
       "Shuttle Pay Server started at : " + Date() + " at port : " + ip
     );
