@@ -371,7 +371,7 @@ server.post("/api/pay", function(req, res) {
       var regNo = result[0].regNo;
       var balance = result[0].balance;
       if (parseInt(balance) < 15) {
-        res.send({ status: "Low Balance" });
+        res.send({ status: "Low Balance", balance: balance });
       } else {
         var newBalance = parseInt(balance) - parseInt("15");
         console.log("New Balance : " + newBalance);
@@ -402,7 +402,7 @@ server.post("/api/pay", function(req, res) {
                 res.send({ status: "error" });
                 throw err;
               } else {
-                res.send({ status: "Paid", balance: balance });
+                res.send({ status: "Paid", balance: newBalance });
               }
             });
           }
@@ -410,6 +410,11 @@ server.post("/api/pay", function(req, res) {
       }
     }
   });
+});
+
+server.post("/testing", function(req, res) {
+  console.log(req.body);
+  res.send({ status: "hehe" });
 });
 
 //End of Server API Handlers ===============================================================
