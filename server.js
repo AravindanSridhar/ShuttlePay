@@ -92,7 +92,7 @@ server.post("/api/fetchTransactionHistory", function(req, res) {
 
 // Fetch cabs' location
 server.post("/api/fetchCabsLocation", function(req, res) {
-  console.log("/fetchCabsLocation" + Math.random());
+  console.log("Cab Location Fetch : " + Math.random());
   let sql = "SELECT * FROM cabs;";
   con.query(sql, function(err, result) {
     if (err) {
@@ -106,7 +106,7 @@ server.post("/api/fetchCabsLocation", function(req, res) {
 
 // Authenticate a user login
 server.post("/api/authLogin", function(req, res) {
-  console.log("User login");
+  console.log("User Login : " + req.body.regNo);
   let regNo = req.body.regNo;
   let pwd = req.body.pwd;
   var pwdHash = crypto
@@ -131,7 +131,7 @@ server.post("/api/authLogin", function(req, res) {
 
 // Authenticate a driver login
 server.post("/api/authDriverLogin", function(req, res) {
-  console.log("Driver Login" + req.body.pwd);
+  console.log("Driver Login : " + req.body.driverID);
   let driverID = req.body.driverID;
   let pwd = req.body.pwd;
   var pwdHash = crypto
@@ -159,7 +159,6 @@ server.post("/api/updateCabsLocation", function(req, res) {
   var cabID = req.body.cabID;
   var lat = req.body.lat;
   var long = req.body.long;
-  console.log("Gokul");
   var sjt = { latitude: 12.971695, longitude: 79.163428 };
   var tt = { latitude: 12.971115, longitude: 79.159427 };
 
@@ -305,7 +304,7 @@ server.post("/api/updateCabsLocation", function(req, res) {
 
 // Recharge handler for Android App
 server.post("/api/makeTransaction", function(req, res) {
-  console.log(req.body);
+  console.log("Initiated transaction" + req.body.regNo);
   var status = req.body.status;
   var regNo = req.body.regNo;
   var timestamp = dateFormat(new Date(), "yyyy-mm-dd HH:MM:ss");
@@ -357,21 +356,23 @@ server.post("/api/makeTransaction", function(req, res) {
 });
 
 server.post("/api/pay", function(req, res) {
-  console.log("Got it");
+  console.log("Payment Initiated");
+  console.log(req.body);
   var rfuid = req.body.rfuid;
   var timestamp = dateFormat(new Date(), "yyyy-mm-dd HH:MM:ss");
   var cabID = req.body.cabID;
   var routeID = req.body.routeID;
-  let sql = "SELECT regNo,balance FROM users WHERE rfuid = '" + rfuid + "';";
+  let sql = "SELECT regNo,balance,userName FROM users WHERE rfuid = '" + rfuid + "';";
   con.query(sql, function(err, result) {
     if (err) {
       res.send({ status: "error" });
       throw err;
     } else {
+      var userName = result[0].userName;
       var regNo = result[0].regNo;
       var balance = result[0].balance;
       if (parseInt(balance) < 15) {
-        res.send({ status: "Low Balance", balance: balance });
+        res.send({regNo: regNo,userName: userName, status: "Low Balance", balance: balance });
       } else {
         var newBalance = parseInt(balance) - parseInt("15");
         console.log("New Balance : " + newBalance);
@@ -402,7 +403,7 @@ server.post("/api/pay", function(req, res) {
                 res.send({ status: "error" });
                 throw err;
               } else {
-                res.send({ status: "Paid", balance: newBalance });
+                res.send({regNo: regNo,userName: userName, status: "Paid", balance: newBalance });
               }
             });
           }
